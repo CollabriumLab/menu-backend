@@ -1,0 +1,28 @@
+FROM node:20-alpine
+
+# Install required packages for Prisma
+RUN apk add --no-cache openssl curl
+
+# Set working directory to /app
+WORKDIR /app
+
+# Copy package files first
+COPY package.json package-lock.json ./
+
+# Copy Prisma schema (needed for postinstall script)
+COPY prisma ./prisma
+
+# Install dependencies (including dev dependencies for Prisma CLI)
+RUN npm ci
+
+# Copy application code
+COPY . .
+
+# Expose the port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8000 || exit 1
+
+CMD ["npm", "run", "dev"]
