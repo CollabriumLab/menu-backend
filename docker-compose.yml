@@ -18,11 +18,12 @@ services:
     environment:
       - NODE_ENV=development
     networks:
-      - home-backend-dev
+      - menu-network
 
 volumes:
   node_modules:
 
 networks:
-  home-backend-dev:
+  menu-network:
+    name: menu-network
     driver: bridge
